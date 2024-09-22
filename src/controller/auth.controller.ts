@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { RegosterValidation } from '../validation/register.validation';
 import { getManager } from 'typeorm';
 import { User } from '../entity/user.entity';
-import bcyptis from 'bcryptjs';
+import bcrypt from 'bcryptjs';
 
 export const Register=async (req:Request,res:Response)=>{
   const body=req.body;
@@ -23,10 +23,33 @@ export const Register=async (req:Request,res:Response)=>{
     first_name:body.first_name,
     last_name:body.last_name,
     email:body.email,
-    password:await bcyptis.hash(body.password,10),
-    confirm_password:await bcyptis.hash(body.confirm_password,10)
+    password:await bcrypt.hash(body.password,10),
+    confirm_password:await bcrypt.hash(body.confirm_password,10)
 
   });
 
     res.send(user);
 }
+
+
+export const Login = async (req: Request, res: Response) => {
+  const repository = getManager().getRepository(User);
+
+  const email = req.body.email; // Extract email from req.body
+
+  if (!email) {
+    return res.status(400).send('Email is required');
+  }
+
+  const user = await repository.findOne({ where: { email } });
+
+  if (!user) {
+    return res.status(400).send('Email or password is wrong');
+  }
+
+  if (await bcrypt.compare(req.body.password, user.password)) {
+    return res.send('Logged in');
+  }
+
+  res.status(400).send('Email or password is wrong');
+};
