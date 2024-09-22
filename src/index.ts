@@ -1,5 +1,6 @@
 import expres from 'express';
 import cors from 'cors';
+import { routes } from './routes';
 
 const app = expres();
 
@@ -8,9 +9,11 @@ app.use(cors({
   origin: 'http://localhost:3000'
 }));
 
-app.get('/', (req, res) => {
-  res.send('Hello World');
-});
+
+
+routes(app);
+
+
 
 app.listen(8001, () => {
   console.log('Server running on port 8000');
