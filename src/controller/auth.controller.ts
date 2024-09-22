@@ -3,6 +3,7 @@ import { RegosterValidation } from '../validation/register.validation';
 import { getManager } from 'typeorm';
 import { User } from '../entity/user.entity';
 import bcrypt from 'bcryptjs';
+import {sign } from 'jsonwebtoken';
 
 export const Register=async (req:Request,res:Response)=>{
   const body=req.body;
@@ -37,9 +38,7 @@ export const Login = async (req: Request, res: Response) => {
 
   const email = req.body.email; // Extract email from req.body
 
-  if (!email) {
-    return res.status(400).send('Email is required');
-  }
+
 
   const user = await repository.findOne({ where: { email } });
 
@@ -47,9 +46,19 @@ export const Login = async (req: Request, res: Response) => {
     return res.status(400).send('Email or password is wrong');
   }
 
-  if (await bcrypt.compare(req.body.password, user.password)) {
-    return res.send('Logged in');
+  if (!await bcrypt.compare(req.body.password, user.password)) {
+    return res.status(400).send('Email or password is wrong');
   }
 
-  res.status(400).send('Email or password is wrong');
+
+
+  const token=sign({
+    id:user.id,
+  
+  },'secret');
+  
+  res.cookie('jwt',token,{httpOnly:true,maxAge:24*60*60*1000});
+
+
+  res.send('Logged in');
 };

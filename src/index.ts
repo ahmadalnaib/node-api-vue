@@ -11,7 +11,8 @@ const app = expres();
 
 app.use(expres.json());
 app.use(cors({
-  origin: 'http://localhost:3000'
+  origin: 'http://localhost:3000',
+  credentials: true
 }));
 
 
