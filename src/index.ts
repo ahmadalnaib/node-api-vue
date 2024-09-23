@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import { routes } from './routes';
 import { createConnection } from 'typeorm';
+import './jobs/syncProducts'; // Import the sync job
 
 // postgresql://postgres:2233@localhost:5432/node_api
 

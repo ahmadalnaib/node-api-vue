@@ -18,11 +18,17 @@ export class Product {
   @Column()
   category: string;
 
-  @Column('float')
-  rating_rate: number;
+  @Column()
+  image: string;
 
-  @Column('int')
-  rating_count: number;
+  @Column('json')
+  rating: {
+    rate: number;
+    count: number;
+  };
+
+  @Column({ default: true })
+  can_buy: boolean;
 
   @ManyToOne(() => User, user => user.products)
   user: User;
