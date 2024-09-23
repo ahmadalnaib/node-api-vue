@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { ProductValidation } from '../validation/product.validation';
 import { getManager } from 'typeorm';
 import { Product } from '../entity/product.entity';
+import fetch from 'node-fetch';
 
 
 
@@ -43,5 +44,20 @@ export const showAllProducts = async (req: Request, res: Response) => {
       return res.status(200).json(products);
     } catch (error) {
       return res.status(500).json({ message: 'Internal Server Error', error });
+    }
+  };
+
+
+  export const getProducts = async (req: Request, res: Response) => {
+    try {
+      const response = await fetch('http://localhost:5001/products');
+      if (!response.ok) {
+        throw new Error('Failed to fetch products');
+      }
+      const products = await response.json();
+      res.json(products);
+    } catch (error) {
+      console.error('Error fetching products:', error);
+      res.status(500).json({ message: 'Internal Server Error' });
     }
   };
