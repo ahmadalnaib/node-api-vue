@@ -1,4 +1,4 @@
-import expres from 'express';
+import express from 'express';
 import cors from 'cors';
 import { routes } from './routes';
 import { createConnection } from 'typeorm';
@@ -7,9 +7,9 @@ import { createConnection } from 'typeorm';
 
 createConnection().then(connection => {
 
-const app = expres();
+const app = express();
 
-app.use(expres.json());
+app.use(express.json());
 app.use(cors({
   origin: 'http://localhost:3000',
   credentials: true

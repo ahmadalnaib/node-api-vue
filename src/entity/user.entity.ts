@@ -1,6 +1,5 @@
-import { Column } from "typeorm";
-import { PrimaryGeneratedColumn } from "typeorm";
-import { Entity } from "typeorm";
+import { PrimaryGeneratedColumn,Entity, Column} from "typeorm";
+
 
 
 @Entity()

@@ -1,6 +1,5 @@
 import { Joi } from "express-validation";
 
-
 export const RegosterValidation = Joi.object({
  first_name: Joi.string().required(),
   last_name: Joi.string().required(),

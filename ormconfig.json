@@ -3,7 +3,8 @@
   "host": "localhost",
   "port" : 5432,
   "username": "postgres",
-  "password": "2233",
+  // 2233
+  "password": "",
   "database": "node_vue",
   "entities": [ "src/entity/*.ts"],
   "logging": true,
