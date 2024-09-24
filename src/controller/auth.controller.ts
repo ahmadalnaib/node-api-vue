@@ -52,10 +52,7 @@ export const Login = async (req: Request, res: Response) => {
 
 
 
-  const token=sign({
-    id:user.id,
-  
-  },process.env.SECRET_KEY);
+  const token=sign({id:user.id},process.env.SECRET_KEY);
   
   res.cookie('jwt',token,{httpOnly:true,maxAge:24*60*60*1000});
 
@@ -67,21 +64,24 @@ export const Login = async (req: Request, res: Response) => {
 
 export const AuthenticatedUser = async (req: Request, res: Response) => {
 
-  try{
 
-  const token=req.cookies.jwt;
-  const payload:any=verify(token,process.env.SECRET_KEY);
+  const jwt=req.cookies['jwt'];
+  const payload: any=verify(jwt,process.env.SECRET_KEY);
 
   if(!payload){
-    return res.status(400).send('Unauthenticated');
+    return res.status(401).send('Unauthenticated');
   }
 
+
+
   const repository = getManager().getRepository(User);
-  const {password,...user} = await repository.findOne(payload.id);
+  const user = await repository.findOne({ where: { id: payload.id } });
+
+
   res.send(user);
-}catch(err){
-  return res.status(400).send('Unauthenticated');
-}
+
+
+  return res.status(401).send('Unauthenticated');
 }
 
 
