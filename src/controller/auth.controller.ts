@@ -3,7 +3,7 @@ import { RegosterValidation } from '../validation/register.validation';
 import { getManager } from 'typeorm';
 import { User } from '../entity/user.entity';
 import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
+import {sign,verify } from 'jsonwebtoken';
 
 export const Register=async (req:Request,res:Response)=>{
   const body=req.body;
@@ -32,27 +32,62 @@ export const Register=async (req:Request,res:Response)=>{
     res.send(user);
 }
 
+
 export const Login = async (req: Request, res: Response) => {
-  const { email, password } = req.body;
+  const repository = getManager().getRepository(User);
 
-  try {
-    const userRepository = getManager().getRepository(User);
-    const user = await userRepository.findOne({ where: { email } });
+  const email = req.body.email; // Extract email from req.body
 
-    if (!user) {
-      return res.status(401).json({ message: 'Invalid email or password' });
-    }
 
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) {
-      return res.status(401).json({ message: 'Invalid email or password' });
-    }
 
-    const token = jwt.sign({ userId: user.id }, 'your_jwt_secret', { expiresIn: '1h' });
+  const user = await repository.findOne({ where: { email } });
 
-    return res.status(200).json({ message: 'Logged in successfully', token });
-  } catch (error) {
-    console.error('Error during login:', error);
-    return res.status(500).json({ message: 'Internal Server Error', error });
+  if (!user) {
+    return res.status(400).send('Email or password is wrong');
   }
+
+  if (!await bcrypt.compare(req.body.password, user.password)) {
+    return res.status(400).send('Email or password is wrong');
+  }
+
+
+
+  const token=sign({
+    id:user.id,
+  
+  },'secret');
+  
+  res.cookie('jwt',token,{httpOnly:true,maxAge:24*60*60*1000});
+
+
+  res.send('Logged in');
 };
+
+
+
+export const AuthenticatedUser = async (req: Request, res: Response) => {
+
+  try{
+
+  const token=req.cookies.jwt;
+  const payload:any=verify(token,'secret');
+
+  if(!payload){
+    return res.status(400).send('Unauthenticated');
+  }
+
+  const repository = getManager().getRepository(User);
+  const {password,...user} = await repository.findOne(payload.id);
+  res.send(user);
+}catch(err){
+  return res.status(400).send('Unauthenticated');
+}
+}
+
+
+export const Logout = async (req: Request, res: Response) => {
+ res.cookie('jwt','',{maxAge:0});
+  res.send('Logged out');
+
+  
+}
