@@ -24,8 +24,7 @@ if (error) {
     product.description = description;
     product.price = price;
     product.category = category;
-    product.rating.rate = rating_rate;
-    product.rating.count = rating_count;
+    product.rating = { rate: rating_rate, count: rating_count };
   
 
     await productRepository.save(product);

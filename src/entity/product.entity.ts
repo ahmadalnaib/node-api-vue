@@ -30,6 +30,11 @@ export class Product {
   @Column({ default: true })
   can_buy: boolean;
 
+
+  @Column({ nullable: true })
+  url: string; // Add this line to include the URL field
+
+
   @ManyToOne(() => User, user => user.products)
   user: User;
 }
