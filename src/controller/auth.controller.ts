@@ -74,3 +74,40 @@ export const Logout = async (req: Request, res: Response) => {
 
   
 }
+
+export const UpdateInfo =async (req: Request, res: Response) => {
+
+  const user=req['user'];
+
+  const repository=getManager().getRepository(User);
+
+  await repository.update(user.id,{
+    first_name:req.body.first_name,
+    last_name:req.body.last_name,
+    email:req.body.email
+  });
+
+  const {password,confirm_password,...updatedUser}=user;
+
+  res.send(updatedUser);
+}
+
+
+export const UpdatePassword = async (req: Request, res: Response) => {
+  const user = req['user'];
+
+  if(req.body.password !== req.body.confirm_password){
+    return res.status(400).send('Password and confirm password do not match');
+  }
+
+  const repository = getManager().getRepository(User);
+
+  await repository.update(user.id, {
+    password: await bcrypt.hash(req.body.password, 10),
+    confirm_password: await bcrypt.hash(req.body.confirm_password, 10)
+  });
+
+ const{password,confirm_password,...updatedUser}= user;
+  
+    res.send(updatedUser);
+}
