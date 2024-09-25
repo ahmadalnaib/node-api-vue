@@ -2,13 +2,20 @@ import { Router } from "express";
 import { Register,Login,Logout,AuthenticatedUser } from "./controller/auth.controller";
 import { Create,getProducts,showProduct } from "./controller/ProductController";
 import { AuthMiddleware } from "./middleware/AuthMiddleware";
+import { LoginAdmin } from "./controller/AdminController";
 
 export const routes=(router:Router)=>{
- router.get('/', (req, res) => {
-    res.send('Hello World!');
-  });   
+  router.get('/', (req, res) => {
+    res.render('index');
+  });
+  router.get('/dashboard', (req, res) => {
+    res.render('dashboard');
+  });
+  router.post('/login', LoginAdmin); // Use LoginAdmin for the /login route
+    
 router.post('/api/register',Register);
 router.post('/api/login',Login);
+
 
 router.get('/api/user',AuthMiddleware,AuthenticatedUser);
 router.post('/api/logout',AuthMiddleware,Logout);
