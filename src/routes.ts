@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { Register,Login,Logout,AuthenticatedUser } from "./controller/auth.controller";
 import { Create,getProducts,showProduct } from "./controller/ProductController";
+import { AuthMiddleware } from "./middleware/AuthMiddleware";
 
 export const routes=(router:Router)=>{
  router.get('/', (req, res) => {
@@ -9,8 +10,8 @@ export const routes=(router:Router)=>{
 router.post('/api/register',Register);
 router.post('/api/login',Login);
 
-router.get('/api/user',AuthenticatedUser);
-router.post('/api/logout',Logout);
+router.get('/api/user',AuthMiddleware,AuthenticatedUser);
+router.post('/api/logout',AuthMiddleware,Logout);
 
 
 
