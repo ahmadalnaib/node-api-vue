@@ -3,6 +3,7 @@ import { Register,Login, AuthenticatedUser, Logout,UpdateInfo,UpdatePassword } f
 import { Create,getProducts,showProduct } from "./controller/ProductController";
 import { AuthMiddleware } from "./middleware/AuthMiddleware";
 import { LoginAdmin } from "./controller/AdminController";
+import { Users,CreateUser ,GetUser,UpdateUser,DeleteUser} from "./controller/user.controller";
 
 export const routes=(router:Router)=>{
   router.get('/', (req, res) => {
@@ -21,6 +22,13 @@ router.get('/api/user',AuthMiddleware,AuthenticatedUser);
 router.post('/api/logout',AuthMiddleware,Logout);
 router.put('/api/user/info',AuthMiddleware,UpdateInfo);
 router.put('/api/user/password',AuthMiddleware,UpdatePassword);
+
+// users
+router.get('/api/users',AuthMiddleware,Users);
+router.post('/api/create/user',AuthMiddleware,CreateUser);
+router.get('/api/user/:id',AuthMiddleware,GetUser);
+router.put('/api/user/:id',AuthMiddleware,UpdateUser);
+router.delete('/api/user/:id',AuthMiddleware,DeleteUser);
 
 
 
