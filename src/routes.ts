@@ -4,6 +4,8 @@ import { Create,getProducts,showProduct } from "./controller/ProductController";
 import { AuthMiddleware } from "./middleware/AuthMiddleware";
 import { LoginAdmin } from "./controller/AdminController";
 import { Users,CreateUser ,GetUser,UpdateUser,DeleteUser} from "./controller/user.controller";
+import { Permission } from "./controller/permission.controller";
+import { Roles,CreateRole,GetRole,UpdateRole,DeleteRole } from "./controller/role.controller";
 
 export const routes=(router:Router)=>{
   router.get('/', (req, res) => {
@@ -30,6 +32,15 @@ router.get('/api/user/:id',AuthMiddleware,GetUser);
 router.put('/api/user/:id',AuthMiddleware,UpdateUser);
 router.delete('/api/user/:id',AuthMiddleware,DeleteUser);
 
+
+// permission
+router.get('/api/permissions',AuthMiddleware,Permission);
+// Role
+ router.get('/api/roles',AuthMiddleware,Roles);
+  router.post('/api/create/role',AuthMiddleware,CreateRole);
+    router.get('/api/role/:id',GetRole);
+   router.put('/api/role/:id',UpdateRole);
+   router.delete('/api/role/:id',DeleteRole);
 
 
 // product
