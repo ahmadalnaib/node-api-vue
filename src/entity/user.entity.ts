@@ -1,5 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne,JoinColumn } from 'typeorm';
 import { Product } from './product.entity';
+import { Role } from './role.entity';
+import { Joi } from 'express-validation';
 
 @Entity()
 export class User {
@@ -21,7 +23,11 @@ export class User {
   @Column()
   confirm_password: string;
 
+  @ManyToOne(() => Role)
+  role:Role;
+
   @OneToMany(() => Product, product => product.user)
+  @JoinColumn({name:"role_id"})
   products: Product[];
 
   // createdAt: Date;

@@ -6,9 +6,9 @@ import bcyptjs from 'bcryptjs';
 export const Users = async (req: Request, res: Response) => {
     const userRepository = getManager().getRepository(User);
 
-    const users = await userRepository.find();
+    const users = await userRepository.find({relations: ['role']});
     res.send(users.map(user => {
-        const { password, ...data } = user;
+        const { password,confirm_password, ...data } = user;
         return data;
     }
     ));
@@ -23,7 +23,10 @@ export const Users = async (req: Request, res: Response) => {
        const {password,confirm_password,...user}=await repository.save({
               ...body,
               password:hashPassword,
-            confirm_password:hashConfirm_password
+              confirm_password:hashConfirm_password,
+              role:{
+                    id:role_id
+              }
              
          });
             res.send(user);
@@ -31,16 +34,33 @@ export const Users = async (req: Request, res: Response) => {
 
     export const GetUser = async (req: Request, res: Response) => {
         const userRepository = getManager().getRepository(User);
-        const {password,confirm_password,...user} = await userRepository.findOne({where: {id: parseInt(req.params.id, 10)}})
+        const { password, confirm_password, ...user } = await userRepository.findOne({
+            where: { id: parseInt(req.params.id, 10) },
+            relations: ['role']
+        });
         res.send(user);
     }
 
     export const UpdateUser = async (req: Request, res: Response) => {
-        const userRepository = getManager().getRepository(User);
-        const user = await userRepository.findOne({where: {id: parseInt(req.params.id, 10)}});
-        userRepository.merge(user, req.body);
-        const updatedUser = await userRepository.save(user);
-        res.send(updatedUser);
+        // const userRepository = getManager().getRepository(User);
+        // const user = await userRepository.findOne({where: {id: parseInt(req.params.id, 10)}});
+        // userRepository.merge(user, req.body);
+        // const updatedUser = await userRepository.save(user);
+        // res.send(updatedUser);
+        const {role_id,...body}=req.body;
+        const repository=getManager().getRepository(User);
+        const { password, confirm_password, ...user } = await repository.findOne({
+            where: { id: parseInt(req.params.id, 10) },
+            relations: ['role']
+        });
+        await repository.save({
+            ...user,
+            ...body,
+            role:{
+                id:role_id
+            }
+        });
+        res.send(user);
     }
 
     export const DeleteUser = async (req: Request, res: Response) => {
