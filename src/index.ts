@@ -5,6 +5,8 @@ import cors from 'cors';
 import { routes } from './routes';
 import { createConnection } from 'typeorm';
 import cookieParser from 'cookie-parser';
+import syncProducts from './jobs/syncProducts';
+import cron from 'node-cron';
 
 // postgresql://postgres:2233@localhost:5432/node_api
 
@@ -21,7 +23,7 @@ app.use(cors({
   origin: ['http://localhost:3000']
 }));
 
-
+cron.schedule('0 * * * *', syncProducts);
 
 routes(app);
 

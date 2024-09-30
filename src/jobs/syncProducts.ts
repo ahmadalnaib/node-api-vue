@@ -67,3 +67,5 @@ const syncProducts = async () => {
 
 // Schedule the sync job to run every minute
 cron.schedule('* * * * *', syncProducts);
+
+export default syncProducts;
