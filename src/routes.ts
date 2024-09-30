@@ -2,6 +2,7 @@ import { Router } from "express";
 import { Register,Login, AuthenticatedUser, Logout,UpdateInfo,UpdatePassword } from "./controller/auth.controller";
 import { Create,getProducts,showProduct } from "./controller/ProductController";
 import { AuthMiddleware } from "./middleware/AuthMiddleware";
+import { AdminAuthMiddleware } from "./middleware/AdminAuthMiddleware";
 import { LoginAdmin } from "./controller/AdminController";
 import { Users,CreateUser ,GetUser,UpdateUser,DeleteUser} from "./controller/user.controller";
 import { Permission } from "./controller/permission.controller";
@@ -11,10 +12,11 @@ export const routes=(router:Router)=>{
   router.get('/', (req, res) => {
     res.render('index');
   });
-  router.get('/dashboard', (req, res) => {
+  router.post('/login', LoginAdmin); // Use LoginAdmin for the /login route
+  
+  router.get('/dashboard', AdminAuthMiddleware,(req, res) => {
     res.render('dashboard');
   });
-  router.post('/login', LoginAdmin); // Use LoginAdmin for the /login route
     
 router.post('/api/register',Register);
 router.post('/api/login',Login);

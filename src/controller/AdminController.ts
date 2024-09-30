@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { getRepository } from 'typeorm';
 import { Admin } from '../entity/admin.entity';
 import bcrypt from 'bcryptjs';
+import {sign,verify } from 'jsonwebtoken';
 
 export const LoginAdmin = async (req: Request, res: Response) => {
   const { email, password } = req.body;
@@ -29,6 +30,10 @@ export const LoginAdmin = async (req: Request, res: Response) => {
       console.log('Invalid password');
       return res.status(400).json({ message: 'Invalid email or password' });
     }
+
+    const token=sign({id:admin.id},process.env.SECRET_KEY_ADMIN);
+  
+    res.cookie('jwt',token,{httpOnly:true,maxAge:24*60*60*1000});
 
     // Authentication successful
     console.log('Login successful');
