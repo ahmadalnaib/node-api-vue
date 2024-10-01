@@ -1,0 +1,75 @@
+doctype html
+html
+  head
+    title= "About"
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    link(rel="stylesheet" href="https://cdn.tailwindcss.com")
+    script(src="https://cdn.tailwindcss.com")
+    script.
+      document.addEventListener('DOMContentLoaded', async () => {
+        try {
+          const response = await fetch('/api/about');
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          const about = await response.json();
+          document.getElementById('text').value = about.text;
+          document.getElementById('photo').value = about.photo;
+          document.getElementById('about-photo').src = about.photo;
+          document.getElementById('about-text').innerText = about.text;
+        } catch (error) {
+          console.error('Error fetching about data:', error);
+        }
+      });
+  body(class="bg-gray-100 text-gray-900")
+    div(class="container mx-auto p-4")
+      h1(class="text-3xl font-bold mb-4") About page
+      p(class="mb-4") Welcome to the about page
+
+      // Display current text and photo
+      div(class="mb-4")
+        img(id="about-photo" alt="About Photo" class="mb-4 object-cover h-48 w-96")
+        p(id="about-text")
+
+      // Form to update text and photo
+      form(id="about-form" class="space-y-4")
+        div
+          label(for="text" class="block text-sm font-medium text-gray-700") Text:
+          textarea(id="text" name="text" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm")
+        div
+          label(for="photo" class="block text-sm font-medium text-gray-700") Photo URL:
+          input(type="text" id="photo" name="photo" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm")
+        div
+          label(for="color" class="block text-sm font-medium text-gray-700") Background Color URL:
+          input(type="color" id="color" name="color" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm")
+
+          
+        div
+          button(type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500") Update
+
+    script.
+      document.getElementById('about-form').addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const text = document.getElementById('text').value;
+        const photo = document.getElementById('photo').value;
+        const color = document.getElementById('color').value;
+        try {
+          const response = await fetch('/api/about', {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ text, photo, color}),
+          });
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          const about = await response.json();
+          document.getElementById('about-photo').src = about.photo;
+          document.getElementById('about-text').innerText = about.text;
+          document.body.style.backgroundColor = about.color;
+        } catch (error) {
+          console.error('Error updating about data:', error);
+        }
+      });

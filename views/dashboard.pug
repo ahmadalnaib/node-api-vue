@@ -1,10 +1,17 @@
-doctype html
+
 html
   head
-    title= "Login"
+    title= "Dashboard"
     meta(charset="UTF-8")
     meta(name="viewport" content="width=device-width, initial-scale=1.0")
 
-  body
-    h1 Dashboard
-   
+
+  body(class="bg-gray-100 text-gray-900")
+    div(class="container mx-auto p-4")
+      h1(class="text-3xl font-bold mb-4") Dashboard
+      p(class="mb-4") Welcome to the dashboard
+      a(href="/about" class="text-blue-500 hover:text-blue-700") About page
+      a(href="/logout" class="text-blue-500 hover:text-blue-700 ml-4") Logout
+
+
+       <script src="https://cdn.tailwindcss.com"></script>

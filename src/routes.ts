@@ -7,6 +7,7 @@ import { LoginAdmin } from "./controller/AdminController";
 import { Users,CreateUser ,GetUser,UpdateUser,DeleteUser} from "./controller/user.controller";
 import { Permission } from "./controller/permission.controller";
 import { Roles,CreateRole,GetRole,UpdateRole,DeleteRole } from "./controller/role.controller";
+import { getAbout, updateAbout } from "./controller/aboutController";
 
 export const routes=(router:Router)=>{
   router.get('/', (req, res) => {
@@ -17,6 +18,18 @@ export const routes=(router:Router)=>{
   router.get('/dashboard', AdminAuthMiddleware,(req, res) => {
     res.render('dashboard');
   });
+
+  router.get('/logout', (req, res) => {
+    res.clearCookie('jwt');
+    res.redirect('/');
+  });
+
+
+  router.get('/about',AdminAuthMiddleware ,(req, res) => {
+    res.render('about');
+  });
+router.get('/api/about',getAbout);
+router.put('/api/about', AdminAuthMiddleware,updateAbout)
     
 router.post('/api/register',Register);
 router.post('/api/login',Login);
@@ -47,9 +60,8 @@ router.get('/api/permissions',AuthMiddleware,Permission);
 
 // product
 router.post('/api/create',Create);
-//  router.get('/api/products',showAllProducts);
- router.get('/api/products',getProducts);
-  router.get('/api/products/:id',showProduct);
+router.get('/api/products',getProducts);
+router.get('/api/products/:id',showProduct);
 
 
 }

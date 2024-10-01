@@ -7,6 +7,9 @@ export class Product {
   id: number;
 
   @Column()
+  ProductId: number;
+
+  @Column()
   title: string;
 
   @Column()
@@ -30,10 +33,8 @@ export class Product {
   @Column({ default: true })
   can_buy: boolean;
 
-
   @Column({ nullable: true })
-  url: string; // Add this line to include the URL field
-
+  url: string;
 
   @ManyToOne(() => User, user => user.products)
   user: User;
