@@ -50,6 +50,7 @@ router.delete('/api/user/:id',AuthMiddleware,DeleteUser);
 
 // permission
 router.get('/api/permissions',AuthMiddleware,Permission);
+
 // Role
  router.get('/api/roles',AuthMiddleware,Roles);
   router.post('/api/create/role',AuthMiddleware,CreateRole);

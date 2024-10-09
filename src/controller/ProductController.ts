@@ -6,7 +6,7 @@ import fetch from 'node-fetch';
 import meilisearchClient from '../meilisearch/meiliSearch';
 
 export const Create = async (req: Request, res: Response) => {
-  const { productId, title, description, price, category, rating_rate, rating_count, can_buy } = req.body;
+  const { title, description, price, category, rating_rate, rating_count, can_buy } = req.body;
 
   // Validate the request body
   const { error } = ProductValidation.validate(req.body);
@@ -17,7 +17,6 @@ export const Create = async (req: Request, res: Response) => {
   try {
     const productRepository = getManager().getRepository(Product);
     const product = new Product();
-    product.ProductId = productId;
     product.title = title;
     product.description = description;
     product.price = price;
@@ -44,10 +43,9 @@ export const getProducts = async (req: Request, res: Response) => {
     // Save the fetched data to the database if not already present
     const productRepository = getManager().getRepository(Product);
     for (const product of products) {
-      const existingProduct = await productRepository.findOne({ where: { ProductId: product.id } });
+      const existingProduct = await productRepository.findOne({ where: { title: product.title, category: product.category } });
       if (!existingProduct) {
         const newProduct = new Product();
-        newProduct.ProductId = product.id;
         newProduct.title = product.title;
         newProduct.description = product.description;
         newProduct.price = product.price;

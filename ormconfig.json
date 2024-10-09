@@ -4,7 +4,7 @@
   "port" : 5432,
   "username": "postgres",
   "password": "",
-  "database": "test1",
+  "database": "node_vue",
   "entities": [ "src/entity/*.ts"],
   "logging": true,
   "synchronize": true
